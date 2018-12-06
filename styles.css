@@ -1,0 +1,14 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: 300px 600px;
+  grid-gap: 10px;
+  padding: 10px;
+}
+.grid-container>textarea {
+  padding:20px 0;
+}
+.button {
+  position: relative;
+  left: 0px;
+  width: 100px;
+}
