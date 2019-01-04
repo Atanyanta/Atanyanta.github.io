@@ -12,7 +12,7 @@ function dothething() {
     resultbox.value += "var jsonData = JSON.parse(responseBody);\n";
     if (json.length != undefined) {
         resultbox.value +=
-            'tests["Data has correct length"] = jsonData.length = ' + json.length + ";\n\n";
+            'tests["Data has correct length"] = jsonData.length === ' + json.length + ";\n\n";
     }
     else resultbox.value += "\n";
 
