@@ -8,13 +8,13 @@ function dothething() {
 
     resultbox.value = "";
     resultbox.value +=
-        'tests["Status code is 200"] = responseCode.code === 200;\n';
+        'pm.test("Status code is 200", function () {pm.response.to.have.status(200);});\n';
     resultbox.value += "var jsonData = JSON.parse(responseBody);\n";
     if (json.length != undefined) {
         resultbox.value +=
-            'tests["Data has correct length"] = jsonData.length === ' + json.length + ";\n\n";
+            'pm.test("Data has correct length"), function() {pm.expect(jsonData.length).to.eql(' + json.length + ");\n\n";
     }
-    else resultbox.value += "\n";
+    else resultbox.value += "\n\n";
 
     parse(json, "jsonData");
 }
@@ -56,34 +56,34 @@ function parse(blob, locstring) {
 
             if (typeof (blob[element]) == "object" && !!blob[element]){
                 teststring =
-                'tests["Empty Array/Object ' +
+                'pm.test("Empty Array/Object ' +
                 element +
                 ' at ' +
                 locstring +
-                '"] = ' +
+                '", function() {pm.expect(' +
                 (Array.isArray(blob[element]) ? "" : "Object.keys(") +
                 locstring +
                 (isNaN(element) ? "." : "[") +
                 element +
                 (isNaN(element) ? "" : "]") +
                 (Array.isArray(blob[element]) ? ".length" : ").length") +
-                " === 0;";
+                ").to.eql(0)});";
             }
 
             else {
                 teststring =
-                'tests["Correct ' +
+                'pm.test("Correct ' +
                 element +
                 ' in ' +
                 locstring +
-                '"] = ' +
+                '", function() {pm.expect(' +
                 locstring +
                 (isNaN(element) ? "." : "[") +
                 element +
                 (isNaN(element) ? "" : "]") +
-                " === " +
+                ").to.eql(" +
                 result +
-                ";";
+                ")});";
             }
             resultbox.value += teststring + "\n";
             if (idx == keys.length - 1) {
