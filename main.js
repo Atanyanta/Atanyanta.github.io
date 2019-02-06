@@ -12,7 +12,7 @@ function dothething() {
     resultbox.value += "var jsonData = JSON.parse(responseBody);\n";
     if (json.length != undefined) {
         resultbox.value +=
-            'pm.test("Data has correct length"), function() {pm.expect(jsonData.length).to.eql(' + json.length + ")});\n\n";
+            'pm.test("Data has correct length", function() {pm.expect(jsonData.length).to.eql(' + json.length + ")});\n\n";
     }
     else resultbox.value += "\n\n";
 
