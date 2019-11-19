@@ -52,3 +52,12 @@ var alpha = {
       document.getElementById('test2').innerHTML += outarray[q] + "<br>";
     }
   }
+
+  function copyToClipboard() {
+    const el = document.createElement('textarea');
+    el.value = document.getElementById('test2').value;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  }
