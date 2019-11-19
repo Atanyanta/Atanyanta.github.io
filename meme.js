@@ -29,7 +29,7 @@ var alpha = {
   };
   
   function genText() {
-    document.getElementById('test').innerHTML = ""
+    document.getElementById('test2').innerHTML = ""
     var input = document.getElementById("phrase").value;
     var emoji = document.getElementById("emoji").value;
     var spaceremoji = document.getElementById("space").value;
@@ -49,6 +49,6 @@ var alpha = {
       }
     }
     for (var q = 0; q < 5; q++) {
-      document.getElementById('test').innerHTML += outarray[q] + "<br>";
+      document.getElementById('test2').innerHTML += outarray[q] + "<br>";
     }
   }
