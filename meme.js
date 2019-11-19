@@ -49,7 +49,7 @@ var alpha = {
       }
     }
     for (var q = 0; q < 5; q++) {
-      document.getElementById('test2').innerHTML += outarray[q] + "<br>";
+      document.getElementById('test2').innerHTML += outarray[q] + "\n";
     }
   }
 
