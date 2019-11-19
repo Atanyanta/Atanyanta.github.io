@@ -42,7 +42,7 @@ var alpha = {
             outarray[j] += emoji;
           }
           else outarray[j] += spaceremoji;
-          if (k == alpha[inputarray[i]][0].length - 1) {
+          if (k == alpha[inputarray[i]][0].length - 1 && i != inputarray.length - 1) {
             outarray[j] += spaceremoji;
           }
         }
