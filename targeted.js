@@ -29,7 +29,7 @@ function targetgen() {
             if (Object.values(json[paramlookup][i]).includes(keyid)) {
                 resultbox.value += "var props = " + JSON.stringify(Object.keys(json[paramlookup][i])) + ";\n";
                 resultbox.value += "var expected = " + JSON.stringify(Object.values(json[paramlookup][i])) + ";\n";
-                resultbox.value += "utils.arrayCompareTest(" + paramlookup + "," + i + ",props,expected);\n";
+                resultbox.value += "utils.arrayCompareTest('" + paramlookup + "'," + i + ",props,expected);\n";
                 break;
             }
         }
