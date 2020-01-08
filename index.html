@@ -3,24 +3,62 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
-</head>
-<div class="grid-container">
-    <textarea id="test" rows=20 cols=50 placeholder="Paste the raw response body from Postman here"></textarea>
-
-    <textarea id="results" rows=20 cols=300 placeholder="Your tests will output here" disabled=true></textarea>
-    <input id="ignored" placeholder="ignored fields, space-separated" align="top"></input>
-    <button class="button" onclick="dothething();">Generate Tests</button>
     <script src="main.js"></script>
-    </textarea>
-</div>
-    <input type="checkbox" id="ignoreemptyarrays">
-    <label for="ignoreemptyarrays">Ignore Empty Arrays/Objects</label>
-<br><br><br>
-<textarea id="test2"></textarea>
-<input type="text" id="phrase" placeholder="phrase">
-<input type="text" id="emoji" placeholder="emoji">
-<input type="text" id="space" placeholder="spacer">
-<button id="dothething" onclick="genText()">do the thing</button>
-<button id="copy" onclick="copyToClipboard()">copy the meme</button>
-<script src="meme.js"></script>
+    <script src="meme.js"></script>
+    <script src="targeted.js"></script>
+</head>
+
+<body>
+
+    <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'TestGen')">Test Generator</button>
+        <button class="tablinks" onclick="openTab(event, 'Targeted')">Targeted tests</button>
+        <button class="tablinks" onclick="openTab(event, 'Meme')">Meme maker</button>
+    </div>
+
+    <div id="TestGen" class="tabcontent" style="display:block">
+        <div class="grid-container">
+            <textarea id="chunktest" rows=20 cols=50 placeholder="Paste the raw response body from Postman here"></textarea>
+
+            <textarea id="chunkresults" rows=20 cols=300 placeholder="Your tests will output here" disabled=true></textarea>
+            <input id="ignored" placeholder="ignored fields, space-separated" align="top"></input>
+            <div>
+                <button class="button" onclick="testgen();">Generate Tests</button>
+                <button class="button" id="copy" onclick="copyToClipboard('chunkresults')">Copy Tests</button>
+            </div>
+
+            </textarea>
+        </div>
+        <input type="checkbox" id="ignoreemptyarrays">
+        <label for="ignoreemptyarrays">Ignore Empty Arrays/Objects</label>
+
+    </div>
+
+    <div id="Targeted" class="tabcontent">
+        <div class="grid-container">
+            <textarea id="target" rows=20 cols=50 placeholder="Paste the raw response body from Postman here"></textarea>
+
+            <textarea id="targetresults" rows=20 cols=300 placeholder="Your tests will output here" disabled=true></textarea>
+            <div>
+                <input id="keyid" placeholder="ID/key to search for" align="top"></input><br>
+                Use a key that is both in the parent object and unique enough to only return one result.
+            </div>
+            <div>
+                <button class="button" onclick="targetgen();">Generate Targeted Tests</button>
+                <button class="button" id="copy" onclick="copyToClipboard('targetresults')">Copy TargetedTests</button>
+            </div>
+
+            </textarea>
+        </div>
+    </div>
+
+    <div id="Meme" class="tabcontent">
+        <textarea id="test2"></textarea>
+        <input type="text" id="phrase" placeholder="phrase">
+        <input type="text" id="emoji" placeholder="emoji">
+        <input type="text" id="space" placeholder="spacer">
+        <button id="dothething" onclick="genText()">Create meme</button>
+        <button id="copy" onclick="copyToClipboard('test2')">Copy Meme</button>
+    </div>
+
 </html>
