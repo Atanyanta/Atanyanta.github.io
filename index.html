@@ -6,13 +6,16 @@
     <script src="main.js"></script>
     <script src="meme.js"></script>
     <script src="targeted.js"></script>
+    <script src="full.js"></script>
 </head>
 
 <body>
 
     <div class="tab">
         <button class="tablinks active" onclick="openTab(event, 'TestGen')">Test Generator</button>
-        <button class="tablinks" onclick="openTab(event, 'Targeted')">Targeted tests</button>
+        <button class="tablinks" onclick="openTab(event, 'Targeted')">Targeted Tests</button>
+        <button class="tablinks" onclick="openTab(event, 'Full Response')">Full Response</button>
+        <button class="tablinks" onclick="openTab(event, 'Helper Functions')">Helper Functions</button>
         <button class="tablinks" onclick="openTab(event, 'Meme')">Meme maker</button>
     </div>
 
@@ -42,11 +45,12 @@
 
             <textarea id="targetresults" rows=20 cols=300 placeholder="Your tests will output here" disabled=true></textarea>
             <div>
-                <input id="keyid" placeholder="ID/key to search for" align="top"></input><br>
-                Use a key that is both in the parent object and unique enough to only return one result.
+                <input id="paramlookup" placeholder="Object in which too look (leave blank if response is an array)" align="top" size="100"></input><br><br>
+                <input id="keyid" placeholder="ID/key to search for" align="top"></input><br><br>
+                In the first field, input the name of the parent array in which you want to find a specific value. In the second field, input the value (ex. a staff key or schedule entry key) you want to search for.
             </div>
             <div>
-                <input id="paramlookup" placeholder="Object in which too look (leave blank if response is an array)" align="top"></input><br>
+                
             </div>
             <div>
                 <button class="button" onclick="targetgen();">Generate Targeted Tests</button>
@@ -55,6 +59,127 @@
 
             </textarea>
         </div>
+    </div>
+
+    <div id="Full Response" class="tabcontent">
+            This tab generates the pre-request scripts and test scripts necessary to do a full response body comparison using the helper functions.
+        <div class="grid-container">
+            <textarea id="fulltest" rows=20 cols=50 placeholder="Paste the raw response body from Postman here"></textarea>
+
+            <textarea id="fullresults" rows=20 cols=300 placeholder="Your tests will output here" disabled=true></textarea>
+            <input id="fullignored" placeholder="ignored fields, space-separated" align="top"></input>
+            <div>
+                <button class="button" onclick="fullgen();">Generate Tests</button>
+                <button class="button" id="copy" onclick="copyToClipboard('fullresults')">Copy Tests</button>
+            </div>
+
+            </textarea>
+        </div>
+        <input type="checkbox" id="fullignoreemptyarrays">
+        <label for="fullignoreemptyarrays">Ignore Empty Arrays/Objects</label>
+    
+    </div>
+
+    <div id="Helper Functions" class="tabcontent">
+        This tab contains a list of helper functions that should live in the global variable "utils".
+        <div class="grid-container">
+            <textarea id="helpers" rows=20 cols=50 placeholder="Paste the raw response body from Postman here">
+                () => {
+                    /*blob is the full jsonData, locstring should be passed in as "", expected is the full expected json response, 
+                    ignoredFields should be space separated fields to not test*/
+                    var parseFull = (blob, locstring, expected, ignoredFields) => {
+                        var keys = Object.keys(blob);
+                        var ignored;
+                        if (!ignoredFields) {
+                            ignored = [];
+                        }
+                        else {
+                            ignored = ignoredFields.split(" ");
+                        }
+                        /*loop through all keys*/
+                        keys.forEach(function (element, idx) {
+                            /*if it's an array, recursively call the function on all array elements*/
+                            if (Array.isArray(blob[element])) {
+                                if (blob[element].length !== 0) {
+                                    parseFull(
+                                        blob[element], 
+                                        locstring + (locstring === "" ? "" : (isNaN(element) ? "." : "[")) + element + (locstring === "" ? "" : (isNaN(element) ? "" : "]")), 
+                                        expected[element],
+                                        ignoredFields
+                                    );
+                                    return;
+                                }
+                            }
+                            /*same if it's an object (array is parsed first because an array is an object and will trigger this)*/
+                            else if (typeof (blob[element]) == "object" && !!blob[element]) {
+                                if (Object.keys(blob[element]) !== 0) {
+                                    parseFull(
+                                        blob[element], 
+                                        locstring + (locstring === "" ? "" : (isNaN(element) ? "." : "[")) + element + (locstring === "" ? "" : (isNaN(element) ? "" : "]")),
+                                        expected[element],
+                                        ignoredFields
+                                    );
+                                    return;
+                                }
+                                /*if it's neither then we must be at an individual key:value pair*/
+                            }
+                            else {
+                                pm.test("Correct " + element + " in jsonData." + locstring, function() {pm.expect(blob[element]).to.eql(expected[element])});
+                            }
+                        });
+                    }
+                    var parseSpecific = (blob, locstring, expected, keyid) => {
+                        var keys = Object.keys(blob);
+                        keys.forEach(function (element, idx) {
+                            /*if it's an array, recursively call the function on all array elements*/
+                            if (Array.isArray(blob[element])) {
+                                if (blob[element].length !== 0 || document.getElementById("ignoreemptyarrays").checked) {
+                                    parseSpecific(
+                                        blob[element], 
+                                        locstring + (locstring === "" ? "" : (isNaN(element) ? "." : "[")) + element + (locstring === "" ? "" : (isNaN(element) ? "" : "]")), 
+                                        expected,
+                                        keyid
+                                    );
+                                    return;
+                                }
+                            }
+                            /*same if it's an object (array is parsed first because an array is an object and will trigger this)*/
+                            else if (typeof (blob[element]) == "object" && !!blob[element]) {
+                                if (Object.values(blob[element]).includes(keyid)) {
+                                    pm.test("Correct item " + keyid + " in jsonData." + locstring, function() {
+                                        pm.expect(blob[element]).to.eql(expected);
+                                        postman.setEnvironmentVariable("found",true);
+                                    });
+                                    return;
+                                }
+                                else if (Object.keys(blob[element]) !== 0 || document.getElementById("ignoreemptyarrays").checked) {
+                                    parseSpecific(
+                                        blob[element], 
+                                        locstring + (locstring === "" ? "" : (isNaN(element) ? "." : "[")) + element + (locstring === "" ? "" : (isNaN(element) ? "" : "]")),
+                                        expected,
+                                        keyid,
+                                        false
+                                    );
+                                    return;
+                                }
+                            /*if it's neither then we must be at an individual key:value pair*/
+                            }
+                            else {
+                                return;
+                            }
+                        });
+                    }
+                    return {
+                        utils: {
+                            parseFull,
+                            parseSpecific
+                        }
+                    };
+                });
+            </textarea>
+
+        </div>
+    
     </div>
 
     <div id="Meme" class="tabcontent">

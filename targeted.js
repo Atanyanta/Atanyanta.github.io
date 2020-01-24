@@ -13,7 +13,7 @@ function targetgen() {
     }
 
     resultbox.value = "";
-    resultbox.value += 'const utils = eval(globals.loadUtils);\n';
+    resultbox.value += 'let utils = eval(globals.loadUtils);\n';
     if (paramlookup == "") {
         for (var i = 0; i < json.length; i++) {
             if (Object.values(json[i]).includes(keyid)) {
