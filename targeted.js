@@ -13,13 +13,14 @@ function targetgen() {
     }
 
     resultbox.value = "";
-    resultbox.value += 'let utils = eval(globals.loadUtils);\n';
+    resultbox.value += 'let utils = eval(environment.utils)();\n';
+    resultbox.value += "var jsonData = JSON.parse(responseBody);\n";
     if (paramlookup == "") {
         for (var i = 0; i < json.length; i++) {
             if (Object.values(json[i]).includes(keyid)) {
-                resultbox.value += "var props = " + JSON.stringify(Object.keys(json[i])) + ";\n";
-                resultbox.value += "var expected = " + JSON.stringify(Object.values(json[i])) + ";\n";
-                resultbox.value += "utils.arrayCompareTest(null,null,props,expected);\n";
+                resultbox.value += "var keyid = '" + keyid + "';\n";
+                resultbox.value += "var expected = " + JSON.stringify(json[i]) + ";\n";
+                resultbox.value += "utils.utils.parseSpecific(jsonData, '', expected, keyid);\n";
                 break;
             }
         }
@@ -27,9 +28,9 @@ function targetgen() {
     else {
         for (var i = 0; i < json[paramlookup].length; i++) {
             if (Object.values(json[paramlookup][i]).includes(keyid)) {
-                resultbox.value += "var props = " + JSON.stringify(Object.keys(json[paramlookup][i])) + ";\n";
-                resultbox.value += "var expected = " + JSON.stringify(Object.values(json[paramlookup][i])) + ";\n";
-                resultbox.value += "utils.arrayCompareTest('" + paramlookup + "'," + i + ",props,expected);\n";
+                resultbox.value += "var keyid = " + keyid + ";\n";
+                resultbox.value += "var expected = " + JSON.stringify(json[paramlookup][i]) + ";\n";
+                resultbox.value += "utils.utils.parseSpecific(jsonData, '', expected, keyid);\n";
                 break;
             }
         }
