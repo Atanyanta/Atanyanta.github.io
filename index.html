@@ -133,7 +133,7 @@
                         keys.forEach(function (element, idx) {
                             /*if it's an array, recursively call the function on all array elements*/
                             if (Array.isArray(blob[element])) {
-                                if (blob[element].length !== 0 || document.getElementById("ignoreemptyarrays").checked) {
+                                if (blob[element].length !== 0) {
                                     parseSpecific(
                                         blob[element], 
                                         locstring + (locstring === "" ? "" : (isNaN(element) ? "." : "[")) + element + (locstring === "" ? "" : (isNaN(element) ? "" : "]")), 
@@ -152,7 +152,7 @@
                                     });
                                     return;
                                 }
-                                else if (Object.keys(blob[element]) !== 0 || document.getElementById("ignoreemptyarrays").checked) {
+                                else if (Object.keys(blob[element]) !== 0) {
                                     parseSpecific(
                                         blob[element], 
                                         locstring + (locstring === "" ? "" : (isNaN(element) ? "." : "[")) + element + (locstring === "" ? "" : (isNaN(element) ? "" : "]")),

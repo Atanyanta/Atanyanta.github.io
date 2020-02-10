@@ -20,7 +20,12 @@ function targetgen() {
             if (Object.values(json[i]).includes(keyid)) {
                 resultbox.value += "var keyid = '" + keyid + "';\n";
                 resultbox.value += "var expected = " + JSON.stringify(json[i]) + ";\n";
+                resultbox.value += "postman.setEnvironmentVariable('found',false);\n";
                 resultbox.value += "utils.utils.parseSpecific(jsonData, '', expected, keyid);\n";
+                resultbox.value += "var found = pm.environment.get('found');\n";
+                resultbox.value += "if (!(found === 'true')) {\n";
+                resultbox.value += "pm.test('Specific item was not found', function() {throw new Error('" + keyid + " not found in returned object.');});\n"
+                resultbox.value += "}\n";
                 break;
             }
         }
@@ -28,9 +33,14 @@ function targetgen() {
     else {
         for (var i = 0; i < json[paramlookup].length; i++) {
             if (Object.values(json[paramlookup][i]).includes(keyid)) {
-                resultbox.value += "var keyid = " + keyid + ";\n";
+                resultbox.value += "var keyid = '" + keyid + "';\n";
                 resultbox.value += "var expected = " + JSON.stringify(json[paramlookup][i]) + ";\n";
+                resultbox.value += "postman.setEnvironmentVariable('found',false);\n";
                 resultbox.value += "utils.utils.parseSpecific(jsonData, '', expected, keyid);\n";
+                resultbox.value += "var found = pm.environment.get('found');\n";
+                resultbox.value += "if (!(found === 'true')) {\n";
+                resultbox.value += "pm.test('Specific item was not found', function() {throw new Error('" + keyid + " not found in returned object.');});\n"
+                resultbox.value += "}\n";
                 break;
             }
         }
