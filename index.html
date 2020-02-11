@@ -123,7 +123,7 @@
                                 }
                                 /*if it's neither then we must be at an individual key:value pair*/
                             }
-                            else {
+                            else if (!ignored.includes(blob[element])){
                                 pm.test("Correct " + element + " in jsonData." + locstring, function() {pm.expect(blob[element]).to.eql(expected[element])});
                             }
                         });
